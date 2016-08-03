@@ -32,8 +32,9 @@ getChainByExpiry:{[ticker;y;m;d]
  
 getFirstTwo:{[ticker]
     a:getChains[0N!ticker];
+    expirations:update date:{"D"$"/" sv x} each string (y,'m,'d) from a`expirations;
     d:exec from 1#1_a`expirations;
-    (a`data),getChainByExpiry[ticker;d`y;d`m;d`d]`data
+    (a`data),{[ticker;d] getChainByExpiry[ticker;d`y;d`m;d`d]`data}[ticker;] each select from 1_expirations where date < .z.D+30
  };
 
 
@@ -66,8 +67,9 @@ static_data:$[0<count key static_data_savePath;get static_data_savePath;get_stat
 
 
 getStuff:{[]
+    //topOptionsTickers:exec ticker from cboe_symbol_list where lastCol in `L`W; / has weekly's
+    topOptionsTickers:exec ticker from cboe_symbol_list where ticker in  exec t from static_data where mc like "*B";
 
-    topOptionsTickers:exec ticker from cboe_symbol_list where lastCol in `L`W; / has weekly's
     chains:@[getFirstTwo;;`fail] each topOptionsTickers;
     chains:raze chains[where 98=type each chains];
 
