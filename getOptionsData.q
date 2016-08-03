@@ -1,6 +1,6 @@
 
 show "loading script...";
-homeDir:system["echo $HOME"];
+homeDir:first system["echo $HOME"];
 storePath:homeDir,"/data/";
 system "mkdir -p ",storePath;
 tableNames:`chains`cboe_symbol_list;
